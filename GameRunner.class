@@ -1,0 +1,160 @@
+package breakout;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+
+import pong.scoreboard;
+import utilities.GDV5;
+
+public class GameRunner extends breakout.GDV5{
+	
+	static Brick[] brickArr = new Brick[24];
+	private int padding = 2;
+	private int brickWidth = (breakout.GDV5.getMaxWindowX() - (8*padding))/8, brickHeight = 20;
+	private paddle paddle = new paddle(360,700,80,15);
+	private paddle paddle2 = new paddle(200,700,paddle.width,15);
+	private sphere ball = new sphere(370,100,12,12);
+	private sphere ball2 = new sphere(370,100,12,12);
+	private sphere powerUpPaddle = new sphere(10,10);
+	private sphere powerUpAddPaddle = new sphere(10,10);
+	private sphere powerUpBall = new sphere(10,10);
+	static int gamePage = 0;
+	private pages pages = new pages();
+	
+	public GameRunner() {
+		super();
+		int x = 1, y = 1, padding = 2;
+		for (int i = 0; i < 24; i++) {
+			brickArr[i] = new Brick(x, y, brickWidth, brickHeight, Color.cyan);
+			x += brickWidth + padding;
+			if ((i+1) % 8 == 0) {
+				y += brickHeight + padding;
+				x = 1;
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		GameRunner g = new GameRunner();
+		g.start();
+	}
+
+	@Override
+	public void update() {
+		if (gamePage == 1 || gamePage ==2 || gamePage ==3) {
+			ball.move(ball, paddle);
+			ball.movePaddle1(paddle);
+			ball.movePaddle2(paddle2, ball);
+		}
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_1])
+			gamePage = 1;
+		if (pages.endScreen() == true) 
+			gamePage = 5;
+	}
+
+	@Override
+	public void draw(Graphics2D mm) {
+		
+		if (gamePage == 0) {
+			pages.drawSplash(mm);
+		}
+		if (gamePage == 1 || gamePage == 2 || gamePage == 3) { 
+			for (int i = 0; i < 24; i++) {	
+				brickArr[i].particleEffect();
+				pages.updateScore(pages, ball, brickArr[i]);
+				if (gamePage == 1) {
+					ball.hitBrick(brickArr[i], ball);
+					powerUpPaddle.powerUpPaddleStart(powerUpPaddle, brickArr[i]);
+					if (i == 0) {
+						powerUpPaddle.increasePowerUp(powerUpPaddle, paddle);
+					}
+					if (powerUpPaddle.returnincreasePaddle()) {
+						powerUpPaddle.draw(mm);
+					}
+					if (brickArr[i].getHit()) {
+						brickArr[i].drawParticleEffect1(mm, ball);
+					}
+				}
+				if (gamePage == 2) {
+					if (i >= 0 && i < 16) {
+						ball.hitBrick(brickArr[i], ball);
+						brickArr[i].color = Color.cyan;
+					}
+					if (i >= 16 && i < 24) {
+						ball.hitBrickTwice(brickArr[i], ball);
+						if (brickArr[i].timesHit == 0) {
+							brickArr[i].color = Color.magenta;
+						}
+						else if (brickArr[i].timesHit == 1) {
+							brickArr[i].color = Color.cyan;
+						}
+						else if (brickArr[i].timesHit == 2) {
+							powerUpAddPaddle.powerUpAddPaddleStart(powerUpAddPaddle, brickArr[i]);
+						}
+					}
+					if (i == 0) {
+						powerUpAddPaddle.addPaddle(powerUpAddPaddle, paddle);
+					}
+					if (powerUpAddPaddle.returnAddPaddle2()) {
+						powerUpAddPaddle.draw(mm);
+					}
+					if (powerUpAddPaddle.returnAddPaddle()) {
+						paddle2.drawPaddle2(mm);
+					}
+					if (brickArr[i].getHit()) {
+						brickArr[i].drawParticleEffect2(mm, ball);
+					}
+				}
+				if (gamePage == 3) {
+					if (i >= 0 && i < 8) {
+						ball.hitBrick(brickArr[i], ball);
+						brickArr[i].color = Color.cyan;
+					}
+					if (i >= 8 && i < 16) {
+						ball.hitBrickTwice(brickArr[i], ball);
+						if (brickArr[i].timesHit == 0) {
+							brickArr[i].color = Color.magenta;
+						}
+						else if (brickArr[i].timesHit == 1) {
+							brickArr[i].color = Color.cyan;
+						}
+					}
+					if (i >= 16 && i < 24) {
+						ball.hitBrickThrice(brickArr[i], ball);
+						if (brickArr[i].timesHit == 0) {
+							brickArr[i].color = Color.yellow;
+						}
+						else if (brickArr[i].timesHit == 1) {
+							brickArr[i].color = Color.magenta;
+						}
+						else if (brickArr[i].timesHit == 2) {
+							brickArr[i].color = Color.cyan;
+						}
+					}
+					if (brickArr[i].getHit()) {
+						brickArr[i].drawParticleEffect3(mm, ball);
+					}
+				}
+				ball.changeLevel(brickArr[i], ball);
+				if (!brickArr[i].getHit()) {
+					brickArr[i].draw(mm);
+				}
+				paddle.drawPaddle(mm);
+				ball.draw(mm);
+				pages.showScore(mm);
+			}  
+		}
+		
+		if (gamePage == 5) {
+			pages.showEnd(mm);
+		}
+		
+		if (gamePage == 6) {
+			pages.showEndWin(mm);
+		}
+	}
+}
+
+
+
