@@ -1,0 +1,24 @@
+package breakout;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+
+public class paddle extends Rectangle{
+	
+	public paddle(int x, int y, int width, int height) {
+		super(x,y,width,height);	
+	}
+	
+	public void drawPaddle(Graphics2D pb) {
+		pb.setColor(Color.LIGHT_GRAY);
+		pb.draw(this);
+		pb.fill(this);
+	}
+	public void drawPaddle2(Graphics2D pb) {
+		pb.setColor(Color.GRAY);
+		pb.draw(this);
+		pb.fill(this);
+	}
+	
+}
