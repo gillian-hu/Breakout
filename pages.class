@@ -1,0 +1,134 @@
+package breakout;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+
+import utilities.GDV5;
+
+public class pages {
+	
+	public static int score = 0;
+	private int lives = 3;
+	private String lifeText = "Lives: ";
+
+	private String breakB = "B";
+	private String breakR = "R";
+	private String breakE = "E";
+	private String breakA = "A";
+	private String breakK = "K";
+	private String breakO = "O";
+	private String breakU = "U";
+	private String breakT = "T";
+	private String breakEnd = "!";
+	
+	
+	private String startKey = "Press 1 to start";
+	private String directions1 = "Use the Left and Right arrow keys to control the paddle";
+	private String directions2 = "Destroy all the bricks to move onto the next level";
+	private String directions3 = "There are a total of 3 levels";
+	private String directions4 = "Power Ups are collected by the paddle";
+	private String directions5 = "The Power Up Paddle is controlled with the A and D Keys";
+	private String name = "By: Gilllian Hu (Period 0)";
+	
+	private String win = "You win!";
+	
+	private String lose = "You lost!";
+	private String finalScore = "Score: ";
+	private String restart = "Press 5 to Restart";
+	
+	public void updateScore(pages scoreboard, sphere ball, Brick b) {
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_3]) {
+			score = 0;
+		}
+		if (ball.y >= 1000) {
+			lives -= 1;
+			ball.x = 370;
+			ball.y = 150;
+		}
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_5]) {
+			lives = 3;
+			GameRunner.gamePage = 1;
+		}
+
+	}
+	
+	public void drawSplash(Graphics2D pw) {
+			pw.setFont(new Font("Monospaced", Font.BOLD, 50));
+			pw.setColor(Color.green);
+			pw.drawString(String.valueOf(breakB),230, 200);
+			pw.setColor(Color.magenta);
+			pw.drawString(String.valueOf(breakR),270, 200);
+			pw.setColor(Color.cyan);
+			pw.drawString(String.valueOf(breakE),310, 200);
+			pw.setColor(Color.orange);
+			pw.drawString(String.valueOf(breakA),350, 200);
+			pw.setColor(Color.pink);
+			pw.drawString(String.valueOf(breakK),390, 200);
+			pw.setColor(Color.white);
+			pw.drawString(String.valueOf(breakO),430, 200);
+			pw.setColor(Color.red);
+			pw.drawString(String.valueOf(breakU),470, 200);
+			pw.setColor(Color.yellow);
+			pw.drawString(String.valueOf(breakT),510, 200);
+			pw.setColor(Color.blue);
+			pw.drawString(String.valueOf(breakEnd),550, 200);
+			pw.setColor(Color.white);
+			
+			pw.setColor(Color.LIGHT_GRAY);
+			pw.setFont(new Font("Monospaced", Font.PLAIN, 16));
+			pw.drawString(String.valueOf(startKey),330, 300);
+			pw.drawString(String.valueOf(directions1),130, 340);
+			pw.drawString(String.valueOf(directions2),160, 380);
+			pw.drawString(String.valueOf(directions3),265, 420);
+			pw.drawString(String.valueOf(directions4),220, 460);
+			pw.drawString(String.valueOf(directions5),130, 500);
+			pw.setColor(Color.WHITE);
+			pw.drawString(String.valueOf(name),280, 540);
+	}
+	
+	public void showScore(Graphics2D pd) {
+			pd.setColor(Color.white);
+			pd.setFont(new Font("Monospaced Bold", Font.PLAIN, 30));
+			pd.drawString(String.valueOf(score),400, 500);
+			pd.setFont(new Font("Monospaced", Font.BOLD, 30));
+			pd.setColor(Color.gray);
+			pd.drawString(String.valueOf(lifeText),10, 750);
+			pd.drawString(String.valueOf(lives),130, 750);
+	}
+	
+	public void showEnd(Graphics2D pr) {
+		pr.setColor(Color.white);
+		pr.setFont(new Font("Monospaced Bold", Font.PLAIN, 30));
+		pr.drawString(String.valueOf(lose),340, 300);
+		pr.drawString(String.valueOf(finalScore),330, 400);
+		pr.drawString(String.valueOf(score),430, 400);
+		pr.drawString(String.valueOf(restart),270, 500);
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_5]) {
+			GameRunner.gamePage = 0;
+		}
+	}
+	
+	public void showEndWin(Graphics2D pq) {
+		pq.setColor(Color.white);
+		pq.setFont(new Font("Monospaced Bold", Font.PLAIN, 30));
+		pq.drawString(String.valueOf(win),343, 300);
+		pq.drawString(String.valueOf(finalScore),330, 400);
+		pq.drawString(String.valueOf(score),430, 400);
+		pq.drawString(String.valueOf(restart),270, 500);
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_5]) {
+			GameRunner.gamePage = 0;
+		}
+	}
+	
+	public boolean endScreen() {
+		if (lives == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+}
