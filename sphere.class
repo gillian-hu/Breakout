@@ -1,0 +1,233 @@
+package breakout;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+
+import pong.ball;
+import pong.paddle;
+
+public class sphere extends Rectangle{
+
+	private static boolean m = true;
+	private static boolean n = false;
+	private boolean s = false;
+	private boolean r = false;
+	private boolean t = false;
+	static int bricksHit = 0;
+	
+	public sphere(int x, int y, int width, int height) {
+		super(x,y,width,height);	
+	}
+	
+	public sphere (int width, int height) {
+		this.x = (int)(Math.random()*7)*100+45;
+		this.y = 50;
+		this.width = width;
+		this.height = height;
+	}
+	
+	public void draw(Graphics2D pb) {
+		pb.setColor(Color.white);
+		pb.drawOval(x, y, width, height);
+		pb.fillOval(x, y, width, height);
+	}
+	
+	public void draw2(Graphics2D pb) {
+		pb.setColor(Color.gray);
+		pb.drawOval(x, y, width, height);
+		pb.fillOval(x, y, width, height);
+	}
+	
+	public void move(sphere ball, breakout.paddle paddle) {
+		if (m == true) {
+			ball.x += 3;
+		}
+		if (m == false) {
+			ball.x -= 3;
+		}
+		if (n == true) {
+			ball.y -= 3;
+		}
+		if (n == false) {
+			ball.y += 3;
+		}
+		if (ball.x >= 782) {
+			m = false;
+		}
+		if (ball.x <= 0) {
+			m = true;
+		}
+		if (ball.y <= 0) {
+			n = false;
+		}
+		if (paddle.width == 80) {
+			if (ball.x >= paddle.x && ball.x <= paddle.x + 68 && ball.y + 12 >= 700  && ball.y + 12 <= 720) {
+				n = true;
+			}
+		}
+		if (paddle.width == 160) {
+			if (ball.x >= paddle.x && ball.x <= paddle.x + 148 && ball.y + 12 >= 700  && ball.y + 12 <= 720) {
+				n = true;
+			}
+		}
+			
+		for (int i = 0; i < 24; i++) {
+			if (ball.intersects(GameRunner.brickArr[i])) {		
+			}
+			else if (ball.intersects(GameRunner.brickArr[i]) && n == false) {
+				n = true;	
+			}
+		}
+	}
+	
+	public void movePaddle1(breakout.paddle paddle) {
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_LEFT]) {
+			paddle.x -= 5;
+		}
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_RIGHT]) {
+			paddle.x += 5;
+		}
+	}
+	
+	public void movePaddle2(breakout.paddle paddle, sphere ball) {
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_A]) {
+			paddle.x -= 5;
+		}
+		if (breakout.GDV5.KeysPressed[KeyEvent.VK_D]) {
+			paddle.x += 5;
+		}
+		if (ball.x >= paddle.x && ball.x <= paddle.x + 68 && ball.y + 12 >= 700  && ball.y + 12 <= 720) {
+			n = true;
+		}
+	}
+	
+	
+	public void hitBrickThrice(Brick b, sphere ball) {
+		for (int i = 0; i < 24; i++) {	
+			if (this.intersects(b) && b.getHit() == false) {
+				b.timesHit += 1;
+				pages.score += 5;
+				ball.y +=12;
+				if (n == true) {
+					n = false;
+				}
+			if (b.timesHit >= 3) {
+				b.setHit(true);
+				bricksHit += 1;
+				pages.score += 10;
+			}
+			}
+		}
+	}
+	
+	public void hitBrickTwice(Brick b, sphere ball) {
+		
+		for (int i = 0; i < 24; i++) {	
+			if (this.intersects(b) && b.getHit() == false) {
+				b.timesHit += 1;
+				pages.score += 5;
+				ball.y +=12;
+				if (n == true) {
+					n = false;
+				}
+			if (b.timesHit >= 2) {
+				b.setHit(true);
+				bricksHit += 1;
+				pages.score += 10;
+			}
+			}
+		}
+	}
+	
+	public void hitBrick(Brick b, sphere ball) {
+		for (int i = 0; i < 24; i++) {	
+			if (this.intersects(b) && b.getHit() == false) {
+				b.setHit(true);
+				bricksHit += 1;
+				pages.score += 10;
+				if (n == true) {
+					n = false;
+				}
+			}
+		}
+	}
+	
+	public void changeLevel(Brick b, sphere ball) {
+		if (pages.score >= 980) {
+			b.setHit(false);
+			b.timesHit = 0;
+			GameRunner.gamePage = 6;
+		}
+		if (pages.score >= 560) {
+			if (pages.score == 560) {
+				if (ball.y < 40) {
+					ball.x = 370;
+					ball.y = 200;
+				}
+				b.setHit(false);
+				b.timesHit = 0;
+			}
+			GameRunner.gamePage = 3;
+		}
+		else if (pages.score >= 240) {
+			if (pages.score == 240) {
+				if (ball.y < 40) {
+					ball.x = 370;
+					ball.y = 200;
+				}
+				b.setHit(false);
+				b.timesHit = 0;
+			}
+			GameRunner.gamePage = 2;
+		}
+	}
+	
+	public void powerUpPaddleStart(sphere ball, Brick b) {
+		if (ball.intersects(b) && b.getHit() == true) {
+			s = true;
+		}
+	}
+	
+	public void powerUpAddPaddleStart(sphere ball, Brick b) {
+		if (ball.intersects(b) && b.getHit() == true) {
+			r = true;
+		}
+	}
+	
+	public void increasePowerUp(sphere ball, breakout.paddle paddle) {
+		if (s == true) {
+			ball.y += 1;
+		}
+		if (ball.x >= paddle.x && ball.x <= paddle.x + 80 && ball.y + 10 >= 700 && ball.y +10 <= 703) {
+			paddle.width = 160;
+			s = false;
+		}
+	}
+	
+	public void addPaddle(sphere ball, breakout.paddle paddle) {
+		if (r == true) {
+			ball.y += 1;
+		}
+		if (ball.x >= paddle.x && ball.x <= paddle.x + 148 && ball.y + 10 >= 700 && ball.y +10 <= 703) {
+			r = false;
+			t = true;
+		}
+	}
+	
+	public boolean returnincreasePaddle() {
+		return s;
+	}
+	
+	public boolean returnAddPaddle() {
+		return t;
+	}
+	
+	public boolean returnAddPaddle2() {
+		return r;
+	}
+	
+}
+
